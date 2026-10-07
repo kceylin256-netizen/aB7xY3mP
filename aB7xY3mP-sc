@@ -1,0 +1,53 @@
+[ENABLE]
+define(address,Asphalt8.exe+EF450D)
+define(bytes,83 79 4C 01 8B FA)
+assert(address,bytes)
+alloc(newmem,$1000,Asphalt8.exe+EF450D)
+label(code)
+label(return)
+
+newmem:
+mov dword ptr [rcx+4C],#2
+
+code:
+cmp dword ptr [rcx+4C],01
+mov edi,edx
+jmp return
+
+address:
+jmp newmem
+nop
+return:
+
+[DISABLE]
+Asphalt8.exe+EF450D:
+db 83 79 4C 01 8B FA
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: Asphalt8.exe+CB27CC
+
+Asphalt8.exe+CB27AE: CC                    - int 3
+Asphalt8.exe+CB27AF: CC                    - int 3
+Asphalt8.exe+CB27B0: 40 55                 - push rbp
+Asphalt8.exe+CB27B2: 53                    - push rbx
+Asphalt8.exe+CB27B3: 57                    - push rdi
+Asphalt8.exe+CB27B4: 48 8B EC              - mov rbp,rsp
+Asphalt8.exe+CB27B7: 48 81 EC 80 00 00 00  - sub rsp,00000080
+Asphalt8.exe+CB27BE: 48 8B 05 53 44 33 01  - mov rax,[Asphalt8.exe+1FE6C18]
+Asphalt8.exe+CB27C5: 48 33 C4              - xor rax,rsp
+Asphalt8.exe+CB27C8: 48 89 45 F0           - mov [rbp-10],rax
+// ---------- INJECTING HERE ----------
+Asphalt8.exe+CB27CC: 83 79 4C 01           - cmp dword ptr [rcx+4C],01
+// ---------- DONE INJECTING  ----------
+Asphalt8.exe+CB27D0: 8B FA                 - mov edi,edx
+Asphalt8.exe+CB27D2: 48 8B D9              - mov rbx,rcx
+Asphalt8.exe+CB27D5: 0F 84 C2 04 00 00     - je Asphalt8.exe+CB2C9D
+Asphalt8.exe+CB27DB: 48 8B 01              - mov rax,[rcx]
+Asphalt8.exe+CB27DE: C6 81 D8 00 00 00 01  - mov byte ptr [rcx+000000D8],01
+Asphalt8.exe+CB27E5: FF 50 28              - call qword ptr [rax+28]
+Asphalt8.exe+CB27E8: 48 8B 4B 60           - mov rcx,[rbx+60]
+Asphalt8.exe+CB27EC: 48 8B 11              - mov rdx,[rcx]
+Asphalt8.exe+CB27EF: 4C 8B 82 98 02 00 00  - mov r8,[rdx+00000298]
+Asphalt8.exe+CB27F6: 84 C0                 - test al,al
+}
